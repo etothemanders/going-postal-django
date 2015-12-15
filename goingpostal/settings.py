@@ -19,11 +19,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('GOING_POSTAL_DJANGO_SECRET_KEY')
+ENVIRONMENT = os.environ.get('ENVIRONMENT')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+if ENVIRONMENT == 'heroku':
+    DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -106,3 +108,27 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Heroku Deployment Instructions
+# and heroku config:set ENVIRONMENT=heroku
+# https://devcenter.heroku.com/articles/getting-started-with-django#django-settings
+
+# Parse database configuration from $DATABASE_URL
+if ENVIRONMENT == 'heroku':
+    import dj_database_url
+    DATABASES['default'] = dj_database_url.config()
+
+# Honor the 'X-Forwarded-Proto' header for request.is_secure()
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Allow all host headers
+ALLOWED_HOSTS = ['*']
+
+# Static asset configuration
+if ENVIRONMENT == 'heroku':
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = 'staticfiles'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
