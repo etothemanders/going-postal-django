@@ -1,0 +1,1 @@
+web: gunicorn goingpostal.wsgi --log-file -
