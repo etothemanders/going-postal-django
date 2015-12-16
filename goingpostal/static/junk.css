@@ -1,0 +1,16 @@
+/*This blank css file exists so that I can successfully run 
+heroku run python manage.py collectstatic
+
+Heroku was complaining that the goingpostal project directory was missing a static dir:
+OSError: [Errno 2] No such file or directory: '/app/goingpostal/static'
+
+Tried:
+heroku run mkdir goingpostal/static/
+But it did not create the empty dir
+
+heroku run python manage.py collectstatic --ignore /app/goingpostal/static
+But it did not ignore the goingpostal directory
+
+Seems my heroku cli user does not have permissions to run any those bash commands.
+Could not even cd around.
+*/
