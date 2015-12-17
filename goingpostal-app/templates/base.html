@@ -16,7 +16,12 @@
           <a class="navbar-brand" href="/">Going Postal</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="/accounts/register">Sign up</a></li>
+          {% if request.user.is_authenticated %}
+            <li><a href="/accounts/logout">Logout</a></li>
+          {% else %}
+            <li><a href="/accounts/login">Login</a></li>
+            <li><a href="/accounts/register">Sign up</a></li>
+          {% endif %}
         </ul>
       </div>
     </nav>
