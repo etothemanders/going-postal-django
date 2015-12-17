@@ -132,3 +132,13 @@ STATIC_ROOT = 'staticfiles'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+# django-registration-redux
+ACCOUNT_ACTIVATION_DAYS = 7
+
+# SendGrid
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'app45106302@heroku.com'
+EMAIL_HOST_PASSWORD = '3tf7i6ju1518'
+EMAIL_USE_TLS = True
