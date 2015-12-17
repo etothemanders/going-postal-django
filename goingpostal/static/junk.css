@@ -1,7 +1,8 @@
 /*This blank css file exists so that I can successfully run 
 heroku run python manage.py collectstatic
 
-Heroku was complaining that the goingpostal project directory was missing a static dir:
+Heroku was complaining that the goingpostal project directory was missing a dir 
+causing the collectstatic command to fail:
 OSError: [Errno 2] No such file or directory: '/app/goingpostal/static'
 
 Tried:
