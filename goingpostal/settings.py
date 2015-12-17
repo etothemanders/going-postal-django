@@ -39,8 +39,8 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'goingpostal-app',
     'registration',
-    'goingpostal-app'
 )
 
 MIDDLEWARE_CLASSES = (

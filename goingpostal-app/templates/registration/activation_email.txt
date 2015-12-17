@@ -1,0 +1,25 @@
+{% load i18n %}
+{% load url from future %}
+
+{% blocktrans %}
+Greetings!
+{% endblocktrans %}
+
+{% blocktrans %}
+To complete your Going Postal registration, please click the link below within
+the next {{ expiration_days }} days:
+{% endblocktrans %}
+
+http://{{site.domain}}{% url 'registration_activate' activation_key %}
+
+{% blocktrans with site_name=site.name %}
+If you did not sign up for an account at
+{{ site_name }}, please ignore this email.
+{% endblocktrans %}
+
+{% blocktrans %}
+Sincerely,
+{% endblocktrans %}
+{% blocktrans with site_name=site.name %}
+Your friends at {{ site_name }}
+{% endblocktrans %}

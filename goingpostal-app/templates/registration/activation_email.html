@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load url from future %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>{{ site.name }} {% trans "registration" %}</title>
+</head>
+
+<body>
+<p>{% trans 'Greetings!' %}</p>
+<p>
+    {% blocktrans %}
+    To complete your Going Postal registration, please click the link below 
+    within the next {{ expiration_days }} days:
+    {% endblocktrans %}
+</p>
+<p>
+    <a href="http://{{site.domain}}{% url 'registration_activate' activation_key %}">
+        {{site.domain}}{% url 'registration_activate' activation_key %}
+    </a>
+</p>
+<p>
+    {% blocktrans with site_name=site.name%}
+    If you did not sign up for an account at {{ site_name }}, 
+    please ignore this email.
+    {% endblocktrans %}
+</p>
+<p>
+    {% blocktrans %}
+    Sincerely,
+    {% endblocktrans %}
+    {% blocktrans with site_name=site.name %}
+    Your friends at {{ site_name }}
+    {% endblocktrans %}
+</p>
+</body>
+
+</html>
