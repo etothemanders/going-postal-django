@@ -1,2 +1,25 @@
 {% extends "base.html" %}
 {% load i18n %}
+
+{% block content %}
+<h1>All Shipments</h1>
+
+<h2>Add a shipment to track</h2>
+
+<p class="bg-danger text-danger hidden" id="error-message"></p>
+<form class="form-inline" action="POST">
+  <div class="form-group">
+    <label for="trackingNumber">UPS Tracking Number</label>
+    <input type="text" class="form-control" id="tracking-number-input" placeholder="ex: 1Z0E64230396452156">
+  </div>
+  <button type="submit" class="btn btn-default" id="track-button">Track</button>
+</form>
+{% if shipments %}
+{% else %}
+  <p>You have no tracked shipments.</p>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+  <script type="text/javascript" src="/static/goingpostal-app/js/validator.js"></script>
+{% endblock %}
