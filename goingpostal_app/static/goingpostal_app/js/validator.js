@@ -30,7 +30,7 @@ var Validator = (function() {
       $('#error-message').html(errorMessage).removeClass('hidden');
     } else {
       $('#error-message').addClass('hidden');
-      $('form').submit();
+      $('#add-form').submit();
     }
   }
 
