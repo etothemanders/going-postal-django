@@ -36,6 +36,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='location',
             name='shipment',
-            field=models.ForeignKey(to='goingpostal-app.Shipment'),
+            field=models.ForeignKey(to='goingpostal_app.Shipment'),
         ),
     ]

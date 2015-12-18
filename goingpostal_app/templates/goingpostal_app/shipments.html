@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<h1>All Shipments</h1>
+
+<h2>Add a shipment to track</h2>
+
+<p class="bg-danger text-danger hidden" id="error-message"></p>
+<form action="" method="POST" class="form-inline">{% csrf_token %}
+  <div class="form-group">
+    <label for="tracking-number-input">UPS Tracking Number</label>
+    <input type="text" name="tracking-number" placeholder="ex: 1Z0E64230396452156" class="form-control" id="tracking-number-input">
+  </div>
+  <button type="submit" class="btn btn-default" id="track-button">Track</button>
+</form>
+{% if shipments %}
+  <table class="table">
+        <thead>
+          <tr>
+            <th>Last Activity</th>
+            <th>Tracking Number</th>
+            <th>Last Location</th>
+            <th>Package Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for shipment in shipments %}
+            <tr id="table_row_{{ shipment.id }}">
+              <td>{{ last_activity.timestamp }}</td>
+              <td>{{ shipment.tracking_no }}</td>
+              <td>{{ last_activity.placename }}</td>
+              <td>{{ last_activity.status_description }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+{% else %}
+  <p>You have no tracked shipments.</p>
+{% endif %}
+{% endblock %}
+
+{% block js %}
+  <script type="text/javascript" src="/static/goingpostal_app/js/validator.js"></script>
+{% endblock %}
