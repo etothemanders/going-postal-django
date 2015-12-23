@@ -20,7 +20,7 @@ class Shipment(models.Model):
 
     @property
     def last_activity(self):
-        pass
+        return Location.objects.filter(shipment=self).order_by('-timestamp').first()
 
 
 class Location(models.Model):
@@ -62,3 +62,18 @@ class Location(models.Model):
                        timestamp=timestamp,
                        status_description=status_description)
         return location
+
+    @property
+    def placename(self):
+        places = []
+        if self.city != 'Unknown':
+            places.append(self.city)
+        if self.state != 'Unknown':
+            places.append(self.state)
+        if self.country != 'Unknown':
+            places.append(self.country)
+
+        if places:
+            return ' '.join(places)
+        else:
+            return 'Unknown'
