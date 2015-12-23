@@ -11,7 +11,7 @@ class UPSInterface(object):
         self.attrs = {'xml:lang': 'en-US'}
 
     def matches(self, tracking_no):
-        return tracking_no.startswith('1Z')
+        return tracking_no.startswith('1Z') and len(tracking_no) == 18
 
     def build_access_request(self):
         d = {
