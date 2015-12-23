@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render, redirect
 
 from .models import Shipment, Location
@@ -10,7 +11,8 @@ def index(request):
 def shipments(request):
     shipments = Shipment.objects.filter(user=request.user.id)
     context = {
-        'shipments': shipments
+        'shipments': shipments,
+        'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY
     }
     return render(request, 'goingpostal_app/shipments.html', context=context)
 

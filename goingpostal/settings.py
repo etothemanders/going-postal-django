@@ -147,3 +147,6 @@ EMAIL_USE_TLS = True
 UPS_LICENSE_NUMBER = os.environ.get('UPS_LICENSE_NUMBER')
 UPS_USER_ID = os.environ.get('UPS_USER_ID')
 UPS_PASSWORD = os.environ.get('UPS_PASSWORD')
+
+# Google Maps API
+GOOGLE_MAPS_API_KEY = os.environ.get('GOOGLE_MAPS_API_KEY')

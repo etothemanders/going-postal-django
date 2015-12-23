@@ -1,0 +1,8 @@
+/*
+Must explicitly declare a height of 100% for #map-canvas and all of its parent 
+elements in order to display the Google map.
+https://developer.mozilla.org/en-US/docs/Web/CSS/height
+*/
+html, body, #content-container, #map-canvas {
+  height: 100%;
+}
