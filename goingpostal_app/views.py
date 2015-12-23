@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 
-from .models import Shipment
+from .models import Shipment, Location
 
 
 def index(request):
@@ -21,7 +21,8 @@ def add_shipment(request):
         tracking_number = data.get('tracking-number')
         s = Shipment(tracking_no=tracking_number, user=request.user)
         s.save()
-
+        activities = s.track_activities()
+        map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=s).save(), activities)
     return redirect('shipments')
 
 

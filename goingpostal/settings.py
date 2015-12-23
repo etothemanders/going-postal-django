@@ -101,7 +101,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -142,3 +142,8 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'app45106302@heroku.com'
 EMAIL_HOST_PASSWORD = '3tf7i6ju1518'
 EMAIL_USE_TLS = True
+
+# UPS API
+UPS_LICENSE_NUMBER = os.environ.get('UPS_LICENSE_NUMBER')
+UPS_USER_ID = os.environ.get('UPS_USER_ID')
+UPS_PASSWORD = os.environ.get('UPS_PASSWORD')
