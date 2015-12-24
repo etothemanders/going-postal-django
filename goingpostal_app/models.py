@@ -1,9 +1,15 @@
 from datetime import datetime
+import json
 
+import googlemaps
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 
 from .tracker import Tracker
+
+gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_SERVER_API_KEY)
 
 
 class Shipment(models.Model):
@@ -61,7 +67,23 @@ class Location(models.Model):
                        country=country,
                        timestamp=timestamp,
                        status_description=status_description)
+        location.geocode()
         return location
+
+    def geocode(self):
+        if self.city != 'Unknown' and self.state != 'Unknown':
+            geocode_results = gmaps.geocode('{city}, {state}'.format(city=self.city, state=self.state))
+            if len(geocode_results) > 0:
+                best_match = geocode_results[0]
+                try:
+                    self.latitude = json.dumps(best_match['geometry']['location']['lat'])
+                except KeyError:
+                    pass
+                try:
+                    self.longitude = json.dumps(best_match['geometry']['location']['lng'])
+                except KeyError:
+                    pass
+                self.save()
 
     @property
     def placename(self):
