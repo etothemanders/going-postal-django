@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from .models import Shipment, Location
@@ -35,3 +36,14 @@ def delete_shipment(request):
         s.delete()
 
     return redirect('shipments')
+
+
+def load_geojson(request):
+    if request.user:
+        shipments = Shipment.objects.filter(user=request.user.id)
+        if shipments:
+            geo_json = {
+                "type": "FeatureCollection",
+                "features": map(lambda s: s.create_geojson_feature(), shipments)
+            }
+            return JsonResponse(geo_json)

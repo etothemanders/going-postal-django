@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^shipments/$', views.shipments, name='shipments'),
     url(r'^shipments/add/$', views.add_shipment, name='add_shipment'),
     url(r'^shipments/delete/$', views.delete_shipment, name='delete_shipment'),
+    url(r'^load_geojson/$', views.load_geojson, name='load_geojson'),
 ]

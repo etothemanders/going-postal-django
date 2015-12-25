@@ -28,14 +28,44 @@ class Shipment(models.Model):
     def last_activity(self):
         return Location.objects.filter(shipment=self).order_by('-timestamp').first()
 
+    def create_geojson_feature(self):
+        locations = Location.objects.filter(shipment=self).exclude(latitude__isnull=True).exclude(longitude__isnull=True)
+        if len(locations) == 1:
+            location = locations.first()
+            point_feature = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [location.longitude, location.latitude]
+                },
+                "properties": {
+                    "strokeColor": "#FF6633"
+                }
+            }
+            return point_feature
+        else:
+            line_feature = {
+                "type": "Feature",
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": map(lambda l: [l.longitude, l.latitude], locations)
+                },
+                "properties": {
+                    "strokeColor": "#FF6633",
+                    "shipmentID": self.id,
+                    "strokeWeight": 5
+                }
+            }
+            return line_feature
+
 
 class Location(models.Model):
     shipment = models.ForeignKey(Shipment, on_delete=models.CASCADE)
     city = models.CharField(max_length=64, blank=True)
     state = models.CharField(max_length=64, blank=True)
     country = models.CharField(max_length=64, blank=True)
-    latitude = models.CharField(max_length=64, blank=True)
-    longitude = models.CharField(max_length=64, blank=True)
+    latitude = models.FloatField(max_length=64, blank=True, null=True)
+    longitude = models.FloatField(max_length=64, blank=True, null=True)
     timestamp = models.DateTimeField()
     status_description = models.CharField(max_length=64)
 
