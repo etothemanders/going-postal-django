@@ -6,3 +6,8 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/height
 html, body, #content-container, #map-canvas {
   height: 100%;
 }
+
+.active-row {
+  background-color: #FF6633;
+  color: #FFF;
+}

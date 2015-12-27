@@ -39,7 +39,7 @@ class Shipment(models.Model):
                     "coordinates": [location.longitude, location.latitude]
                 },
                 "properties": {
-                    "strokeColor": "#FF6633"
+                    "shipmentID": self.id
                 }
             }
             return point_feature
@@ -51,9 +51,7 @@ class Shipment(models.Model):
                     "coordinates": map(lambda l: [l.longitude, l.latitude], locations)
                 },
                 "properties": {
-                    "strokeColor": "#FF6633",
                     "shipmentID": self.id,
-                    "strokeWeight": 5
                 }
             }
             return line_feature
