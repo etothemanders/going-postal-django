@@ -1,10 +1,20 @@
 {% extends 'base.html' %}
-{% load i18n %}
+{% load i18n staticfiles %}
 
 {% block title %}Going Postal - Home{% endblock %}
 
 {% block content %}
-  <div class="container-fluid">
-    <h1>{% blocktrans %}Index Page{% endblocktrans %}</h1>
+  <div class="masthead">
+    <h1>{% blocktrans %}Going Postal{% endblocktrans %}</h1>
+    <h2>{% blocktrans %}Package tracking for online shoppers{% endblocktrans %}</h2>
+    <a href="/accounts/register" class="btn btn-lg btn-block">{% trans 'Sign Up' %}</a>
   </div>
+  <footer>
+    <p>Photo credit: <a href="http://bit.ly/1TgRdnc">Fabian Reus</a></p>
+  </footer>
+{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" type="text/css" href="{% static 'goingpostal_app/css/style.css' %}" />
+  <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Lemon">
 {% endblock %}

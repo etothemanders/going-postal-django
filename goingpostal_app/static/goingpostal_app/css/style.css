@@ -1,0 +1,66 @@
+.navbar {
+  margin-bottom: 0;
+}
+
+#content-container {
+  background-image: url("/static/goingpostal_app/img/mailbox.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 700px;
+}
+
+.masthead h1,
+.masthead h2,
+.masthead a {
+  text-align: center;
+}
+
+
+.masthead h1 {
+  color: white;
+  font-family: Lemon, cursive;
+  font-size: 100px;
+  margin: 70px auto 50px auto;
+}
+
+@media (max-width: 767px) {
+  .masthead h1 {
+    font-size: 80px;
+  }
+}
+
+.masthead h2 {
+  color: white;
+  margin-bottom: 70px;
+}
+
+.masthead a {
+  background-color: #339999;
+  background-image: none;
+  color: white;
+  display: block;
+  margin: auto auto 70px auto;
+  text-shadow: none;
+  width: 300px;
+}
+
+.masthead a:hover,
+.masthead a:focus {
+  background-color: #009999;
+  background-image: none;
+  border-color: white;
+  color: white;
+}
+
+.mashead a:active,
+.masthead a.active {
+  background-color: #009999;
+  background-image: none;
+  box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+  color: white;
+}
+
+footer p {
+  color: white;
+  text-align: right;
+}
