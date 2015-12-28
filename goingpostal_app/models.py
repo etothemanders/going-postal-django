@@ -24,12 +24,27 @@ class Shipment(models.Model):
         activities = shipper_interface.track(self.tracking_no)
         return activities
 
+    def check_for_new_activity(self):
+        activities = self.track_activities()
+        locations = map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=self), activities)
+        for loc in locations:
+            try:
+                previous_location = Location.objects.get(shipment=self,
+                                                         city=loc.city,
+                                                         state=loc.state,
+                                                         country=loc.country,
+                                                         timestamp=loc.timestamp,
+                                                         status_description=loc.status_description)
+            except Location.DoesNotExist:
+                loc.geocode()
+                loc.save()
+
     @property
     def last_activity(self):
         return Location.objects.filter(shipment=self).order_by('-timestamp').first()
 
     def create_geojson_feature(self):
-        locations = Location.objects.filter(shipment=self).exclude(latitude__isnull=True).exclude(longitude__isnull=True)
+        locations = Location.objects.filter(shipment=self).exclude(latitude__isnull=True).exclude(longitude__isnull=True).order_by('timestamp')
         if len(locations) == 1:
             location = locations.first()
             point_feature = {
@@ -95,7 +110,6 @@ class Location(models.Model):
                        country=country,
                        timestamp=timestamp,
                        status_description=status_description)
-        location.geocode()
         return location
 
     def geocode(self):
@@ -111,7 +125,7 @@ class Location(models.Model):
                     self.longitude = json.dumps(best_match['geometry']['location']['lng'])
                 except KeyError:
                     pass
-                self.save()
+        return self
 
     @property
     def placename(self):

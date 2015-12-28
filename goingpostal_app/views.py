@@ -11,6 +11,10 @@ def index(request):
 
 def shipments(request):
     shipments = Shipment.objects.filter(user=request.user.id)
+    undelivered_shipments = filter(lambda s: s.last_activity.status_description.upper() != 'DELIVERED', shipments)
+    if undelivered_shipments:
+        map(lambda u: u.check_for_new_activity(), undelivered_shipments)
+        shipments = Shipment.objects.filter(user=request.user.id)
     context = {
         'shipments': shipments,
         'GOOGLE_MAPS_API_KEY': settings.GOOGLE_MAPS_API_KEY
@@ -25,7 +29,7 @@ def add_shipment(request):
         s = Shipment(tracking_no=tracking_number, user=request.user)
         s.save()
         activities = s.track_activities()
-        map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=s).save(), activities)
+        map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=s).geocode().save(), activities)
     return redirect('shipments')
 
 
