@@ -13,9 +13,10 @@ var Validator = (function() {
   }
 
   function validateFormInput() {
-    var $formInput = $('#tracking-number-input').val().trim();
+    var $formInput = $('#tracking-number-input').val().toUpperCase().trim();
     var emptyError = 'Please enter a tracking number.';
-    var invalidTrackingNumber = 'Please enter a valid UPS tracking number. Ex: 1ZY8Y608YW02920325';
+    var formatError = 'Please enter a valid UPS tracking number. Ex: 1ZY8Y608YW02920325';
+    var duplicateError = 'You are already tracking that number.'
     var errorMessage = false;
     
     $('#error-message').empty();
@@ -23,7 +24,15 @@ var Validator = (function() {
     if ($formInput === '') {
       errorMessage = emptyError;
     } else if (!/1Z[A-Z0-9]{16}/.test($formInput)) {
-      errorMessage = invalidTrackingNumber;
+      errorMessage = formatError;
+    } else {
+      $('.tracking-number-td').each(function() {
+        if ($(this).text() === $formInput) {
+          errorMessage = duplicateError;
+          // break out of the loop early
+          return false;
+        }
+      });
     }
 
     if (errorMessage) {

@@ -25,7 +25,7 @@ def shipments(request):
 def add_shipment(request):
     if request.method == 'POST':
         data = request.POST
-        tracking_number = data.get('tracking-number')
+        tracking_number = data.get('tracking-number').upper()
         s = Shipment(tracking_no=tracking_number, user=request.user)
         s.save()
         activities = s.track_activities()

@@ -7,6 +7,11 @@ html, body, #content-container, #map-canvas {
   height: 100%;
 }
 
+#error-message {
+  border-radius: 5px;
+  padding: 15px;
+}
+
 .active-row {
   background-color: #FF6633;
   color: #FFF;

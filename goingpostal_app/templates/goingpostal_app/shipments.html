@@ -30,7 +30,7 @@
         <tbody>
           {% for shipment in shipments %}
             <tr id="table_row_{{ shipment.id }}">
-              <td>{{ shipment.tracking_no }}</td>
+              <td class="tracking-number-td">{{ shipment.tracking_no }}</td>
               <td>{{ shipment.last_activity.placename }}</td>
               <td>{{ shipment.last_activity.status_description }}</td>
               <td>{{ shipment.last_activity.timestamp }}</td>
