@@ -51,3 +51,7 @@ def load_geojson(request):
                 "features": map(lambda s: s.create_geojson_feature(), shipments)
             }
             return JsonResponse(geo_json)
+
+
+def user_settings(request):
+    return render(request, 'goingpostal_app/settings.html')

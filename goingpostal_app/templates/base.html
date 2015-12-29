@@ -28,7 +28,7 @@
           <ul class="nav navbar-nav navbar-right">
             {% if request.user.is_authenticated %}
               <li><a href="/shipments/">My Shipments</a></li>
-              <li><a href="">Logged in as {{ request.user }}</a></li>
+              <li><a href="/settings/">{{ request.user }}'s Settings</a></li>
               <li><a href="/accounts/logout">Logout</a></li>
             {% else %}
               <li><a href="/accounts/login">Login</a></li>
