@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
@@ -56,3 +57,10 @@ def load_geojson(request):
 
 def user_settings(request):
     return render(request, 'goingpostal_app/settings.html')
+
+
+def delete_user(request):
+    if request.method == 'POST':
+        user = User.objects.filter(id=request.user.id)
+        user.delete()
+    return redirect('index')

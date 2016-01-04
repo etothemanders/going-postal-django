@@ -4,4 +4,10 @@
 {% block title %}Going Postal - My Settings{% endblock %}
 
 {% block content %}
+  <h2>Delete My Account</h2>
+  <p>Please note that deleting your account is not reversible.</p>
+  <form action="/user/delete/" method="POST" id="delete-form">
+    {% csrf_token %}
+    <button type="submit">Delete my account</button>
+  </form>
 {% endblock %}

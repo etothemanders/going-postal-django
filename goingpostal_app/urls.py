@@ -8,5 +8,6 @@ urlpatterns = [
     url(r'^settings/$', views.user_settings, name='settings'),
     url(r'^shipments/$', views.shipments, name='shipments'),
     url(r'^shipments/add/$', views.add_shipment, name='add_shipment'),
-    url(r'^shipments/delete/$', views.delete_shipment, name='delete_shipment')
+    url(r'^shipments/delete/$', views.delete_shipment, name='delete_shipment'),
+    url(r'^user/delete/$', views.delete_user, name='delete_user')
 ]
