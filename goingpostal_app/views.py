@@ -26,10 +26,11 @@ def add_shipment(request):
     if request.method == 'POST':
         data = request.POST
         tracking_number = data.get('tracking-number').upper()
-        s = Shipment(tracking_no=tracking_number, user=request.user)
-        s.save()
-        activities = s.track_activities()
-        map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=s).geocode().save(), activities)
+        if not Shipment.objects.filter(tracking_no=tracking_number, user=request.user):
+            s = Shipment(tracking_no=tracking_number, user=request.user)
+            s.save()
+            activities = s.track_activities()
+            map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=s).geocode().save(), activities)
     return redirect('shipments')
 
 
