@@ -1,4 +1,6 @@
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -55,10 +57,23 @@ def load_geojson(request):
             return JsonResponse(geo_json)
 
 
+@login_required
 def user_settings(request):
-    return render(request, 'goingpostal_app/settings.html')
+    if request.method == 'POST':
+        form = SetPasswordForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('auth_password_reset_complete')
+    else:
+        form = SetPasswordForm(request.user)
+
+    context = {
+        'change_password_form': form
+    }
+    return render(request, 'goingpostal_app/settings.html', context=context)
 
 
+@login_required
 def delete_user(request):
     if request.method == 'POST':
         user = User.objects.filter(id=request.user.id)
