@@ -56,9 +56,9 @@
 {% endblock %}
 
 {% block js %}
+  <script type="text/javascript" src="/static/goingpostal_app/js/mapper.js"></script>
+  <script type="text/javascript" src="/static/goingpostal_app/js/validator.js"></script>
   <script async defer
       src="https://maps.googleapis.com/maps/api/js?key={{ GOOGLE_MAPS_API_KEY }}&callback=GP.mapper.init">
     </script>
-  <script type="text/javascript" src="/static/goingpostal_app/js/validator.js"></script>
-  <script type="text/javascript" src="/static/goingpostal_app/js/mapper.js"></script>
 {% endblock %}
