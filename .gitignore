@@ -62,3 +62,6 @@ target/
 
 # Project Notes
 notes.md
+
+# Secrets
+client_secrets.json
