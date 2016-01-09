@@ -2,10 +2,11 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
-from .models import Shipment, Location
+from .models import Shipment, Location, EmailAccount, FlowModel
+from .gmail import FLOW, exchange_code, get_user_info
 
 
 def index(request):
@@ -67,8 +68,11 @@ def user_settings(request):
     else:
         form = SetPasswordForm(request.user)
 
+    email_accounts = EmailAccount.objects.filter(user=request.user)
+
     context = {
-        'change_password_form': form
+        'change_password_form': form,
+        'email_accounts': email_accounts
     }
     return render(request, 'goingpostal_app/settings.html', context=context)
 
@@ -79,3 +83,44 @@ def delete_user(request):
         user = User.objects.filter(id=request.user.id)
         user.delete()
     return redirect('index')
+
+
+@login_required
+def add_gmail(request):
+    try:
+        flow = FlowModel.objects.filter(id=request.user).first().flow
+    except AttributeError:
+        flow = FLOW
+        django_flow_model = FlowModel(id=request.user, flow=flow)
+        django_flow_model.save()
+    authorize_url = flow.step1_get_authorize_url()
+    return HttpResponseRedirect(authorize_url)
+
+
+@login_required
+def handle_gmail_auth_response(request):
+    response_params = request.GET.dict()
+    if 'error' in response_params:
+        return redirect('settings')
+    authorization_code = response_params.get('code')
+    credentials = exchange_code(request, authorization_code)
+
+    user_info = get_user_info(credentials)
+    email_address = user_info.get('email')
+    email_account = EmailAccount(user=request.user,
+                                 email_address=email_address,
+                                 credential=credentials,
+                                 access_token=credentials.access_token,
+                                 refresh_token=credentials.refresh_token)
+    email_account.save()
+    return redirect('settings')
+
+
+@login_required
+def delete_gmail(request):
+    if request.method == 'POST':
+        email_account_id = request.POST.get('email-account-id')
+        email_account = EmailAccount.objects.get(id=email_account_id)
+        email_account.delete()
+
+    return redirect('settings')
