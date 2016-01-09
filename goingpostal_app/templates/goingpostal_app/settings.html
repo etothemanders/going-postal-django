@@ -4,6 +4,36 @@
 {% block title %}Going Postal - My Settings{% endblock %}
 
 {% block content %}
+  <h2>Link a Gmail Account</h2>
+  <p>Link a Gmail account to allow Going Postal to find and track package tracking numbers from your email automatically.</p>
+  {% if email_accounts %}
+    <table>
+      <thead>
+        <tr>
+          <th>Gmail Account</th>
+          <th>Unlink</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for email_account in email_accounts %}
+        <tr>
+          <td>{{ email_account.email_address }}</td>
+          <td>
+            <form action="/gmail/delete/" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="email-account-id" value="{{ email_account.id }}">
+              <button type="submit" class="btn btn-xs btn-default">Unlink</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>You do not have any Gmail accounts linked.</p>
+  {% endif %}
+  <a href="/gmail/add/" class="btn btn-primary">Add a Gmail account</a>
+
   <h2>Change My Password</h2>
   <form action="" method="POST">
     {{ change_password_form.non_field_errors }}
