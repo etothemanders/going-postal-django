@@ -6,7 +6,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from .models import Shipment, Location, EmailAccount, FlowModel
-from .gmail import FLOW, exchange_code, get_user_info
+from .google_oauth import FLOW, exchange_code, get_user_info
 
 
 def index(request):
@@ -102,6 +102,7 @@ def handle_gmail_auth_response(request):
     response_params = request.GET.dict()
     if 'error' in response_params:
         return redirect('settings')
+
     authorization_code = response_params.get('code')
     credentials = exchange_code(request, authorization_code)
 
@@ -109,10 +110,9 @@ def handle_gmail_auth_response(request):
     email_address = user_info.get('email')
     email_account = EmailAccount(user=request.user,
                                  email_address=email_address,
-                                 credential=credentials,
-                                 access_token=credentials.access_token,
-                                 refresh_token=credentials.refresh_token)
+                                 credential=credentials)
     email_account.save()
+    email_account.get_shipment_emails()
     return redirect('settings')
 
 
