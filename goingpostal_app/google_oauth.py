@@ -1,4 +1,5 @@
 import logging
+import os
 
 from apiclient import errors
 from apiclient.discovery import build
@@ -10,7 +11,7 @@ from oauth2client.client import FlowExchangeError
 from .models import FlowModel
 
 
-REDIRECT_URI = 'http://localhost:8000/gmail/handle-auth-response/'
+REDIRECT_URI = os.environ.get('GOOGLE_OAUTH2_REDIRECT_URI')
 SCOPES = [
     'https://www.googleapis.com/auth/gmail.readonly',
     'https://www.googleapis.com/auth/userinfo.email',
