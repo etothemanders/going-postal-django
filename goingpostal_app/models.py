@@ -162,7 +162,7 @@ class EmailAccount(models.Model):
         credentials = self.credential
         http = credentials.authorize(httplib2.Http())
         service = discovery.build('gmail', 'v1', http=http)
-        query = 'shipped tracking number newer_than:30d'
+        query = 'shipped tracking number newer_than:60d'
 
         try:
             response = (service
