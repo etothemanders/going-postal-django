@@ -222,12 +222,13 @@ class Email(models.Model):
 
             pattern = r'1Z[A-Z0-9]{16}'
             results = re.findall(pattern, msg_body)
-            tracking_number = results[0]
-            if not Shipment.objects.filter(tracking_no=tracking_number, user=self.email_account.user):
-                s = Shipment(tracking_no=tracking_number, user=self.email_account.user)
-                s.save()
-                activities = s.track_activities()
-                map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=s).geocode().save(), activities)
+            if results:
+                tracking_number = results[0]
+                if not Shipment.objects.filter(tracking_no=tracking_number, user=self.email_account.user):
+                    s = Shipment(tracking_no=tracking_number, user=self.email_account.user)
+                    s.save()
+                    activities = s.track_activities()
+                    map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=s).geocode().save(), activities)
 
         except errors.HttpError, error:
             logging.error('An error occurred: %s', error)
