@@ -1,11 +1,12 @@
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
-from .models import Shipment, Location, EmailAccount, FlowModel
+from .models import Shipment, EmailAccount, FlowModel
 from .google_oauth import FLOW, exchange_code, get_user_info
 
 
@@ -13,7 +14,7 @@ def index(request):
     return render(request, 'goingpostal_app/index.html')
 
 
-def shipments(request):
+def shipments(request, context=None):
     shipments = Shipment.objects.filter(user=request.user.id)
     undelivered_shipments = filter(lambda s: s.last_activity.status_description.upper() != 'DELIVERED', shipments)
     if undelivered_shipments:
@@ -30,11 +31,11 @@ def add_shipment(request):
     if request.method == 'POST':
         data = request.POST
         tracking_number = data.get('tracking-number').upper()
-        if not Shipment.objects.filter(tracking_no=tracking_number, user=request.user):
-            s = Shipment(tracking_no=tracking_number, user=request.user)
-            s.save()
-            activities = s.track_activities()
-            map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=s).geocode().save(), activities)
+        try:
+            Shipment.add_shipment(user=request.user, tracking_number=tracking_number)
+        except Exception, exception:
+            messages.error(request, exception.message)
+
     return redirect('shipments')
 
 

@@ -12,6 +12,7 @@ import googlemaps
 import httplib2
 from oauth2client.django_orm import FlowField, CredentialsField
 
+from .exceptions import UntrackableException, DuplicateShipmentException
 from .tracker import Tracker
 
 GMAPS = googlemaps.Client(key=settings.GOOGLE_MAPS_SERVER_API_KEY)
@@ -24,10 +25,27 @@ class Shipment(models.Model):
     def __str__(self):
         return self.tracking_no
 
+    @classmethod
+    def add_shipment(cls, user=None, tracking_number=None):
+        if not cls.objects.filter(tracking_no=tracking_number, user=user):
+            s = cls(tracking_no=tracking_number, user=user)
+            try:
+                s.track_activities()
+            except Exception:
+                raise UntrackableException(tracking_number)
+        else:
+            raise DuplicateShipmentException(tracking_number)
+
     def track_activities(self):
         shipper_interface = Tracker.get_shipper_interface(self.tracking_no)
         activities = shipper_interface.track(self.tracking_no)
-        return activities
+
+        # If the UPS API does not return any activity data, don't save the shipment
+        if not activities:
+            raise Exception
+
+        self.save()
+        map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=self).geocode().save(), activities)
 
     def check_for_new_activity(self):
         activities = self.track_activities()
@@ -85,7 +103,7 @@ class Location(models.Model):
     latitude = models.FloatField(max_length=64, blank=True, null=True)
     longitude = models.FloatField(max_length=64, blank=True, null=True)
     timestamp = models.DateTimeField()
-    status_description = models.CharField(max_length=64)
+    status_description = models.CharField(max_length=128)
 
     @classmethod
     def create(cls, activity_dict=None, shipment=None):
@@ -219,16 +237,22 @@ class Email(models.Model):
                             format='raw')
                        .execute())
             msg_body = base64.urlsafe_b64decode(message['raw'].encode('ASCII'))
-
             pattern = r'1Z[A-Z0-9]{16}'
             results = re.findall(pattern, msg_body)
+
             if results:
-                tracking_number = results[0]
-                if not Shipment.objects.filter(tracking_no=tracking_number, user=self.email_account.user):
-                    s = Shipment(tracking_no=tracking_number, user=self.email_account.user)
-                    s.save()
-                    activities = s.track_activities()
-                    map(lambda activity_dict: Location.create(activity_dict=activity_dict, shipment=s).geocode().save(), activities)
+                # In case there is more than one legitimate tracking number...
+                tracking_numbers = set(results)
+
+                # ...try to add all of them
+                for tracking_number in tracking_numbers:
+                    try:
+                        Shipment.add_shipment(user=self.email_account.user,
+                                              tracking_number=tracking_number)
+                    except DuplicateShipmentException, exception:
+                        logging.info('An exception occured: %s', exception.message)
+                    except UntrackableException, exception:
+                        logging.warning('An exception occurred: %s', exception.message)
 
         except errors.HttpError, error:
             logging.error('An error occurred: %s', error)

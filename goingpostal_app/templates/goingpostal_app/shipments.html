@@ -4,11 +4,18 @@
 {% block title %}Going Postal - My Shipments{% endblock %}
 
 {% block content %}
-<h1>All Shipments</h1>
+<h1>Add a shipment to track</h1>
 
-<h2>Add a shipment to track</h2>
+{% comment %}For server side error messaging.{% endcomment %}
+{% if messages %}
+  {% for msg in messages %}
+    <p class="bg-danger text-danger" id="error-message">{{ msg }}</p>
+  {% endfor %}
+{% endif %}
 
+{% comment %}DOM target for client side error messaging.{% endcomment %}
 <p class="bg-danger text-danger hidden" id="error-message"></p>
+
 <form action="add/" method="POST" class="form-inline" id="add-form">{% csrf_token %}
   <div class="form-group">
     <label for="tracking-number-input">UPS Tracking Number</label>
